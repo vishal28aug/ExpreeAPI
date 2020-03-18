@@ -2,8 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
+//Route files
+const bootcamps = require('./routes/bootcamps');
+
 //Load env vars
-dotenv.config({path:'./config/config.env'});
+dotenv.config({ path: './config/config.env' });
 
 //Connect to database
 connectDB();
@@ -15,7 +18,6 @@ const app = express();
 
 //Body parser
 app.use(express.json());
-
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
