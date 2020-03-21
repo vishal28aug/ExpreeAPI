@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 //Model
 const BootcampSchema = new mongoose.Schema({
@@ -33,6 +34,24 @@ const BootcampSchema = new mongoose.Schema({
     type: String,
     default: 'no-photo.jpg'
   }
-})
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+
+});
+
+//Create bootcamp slug from name
+BootcampSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+//Reverse populate with virtuals
+BootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
+});
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);

@@ -1,6 +1,9 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
+const fileupload = require('express-fileupload')
 const connectDB = require('./config/db');
+const errorHandler = require('./middleware/error');
 
 
 //Load env vars
@@ -10,15 +13,27 @@ dotenv.config({ path: './config/config.env' });
 connectDB();
 
 //Route files
+const courses = require('./routes/course');
 const bootcamps = require('./routes/bootcamp');
+
 
 const app = express();
 
 //Body parser
 app.use(express.json());
 
+//File Uploading
+app.use(fileupload());
+
+//Set static folder
+app.use(express.static(path.join(__dirname,'public')));
+
 //Mount routers
+app.use('/api/v1/course', courses);
 app.use('/api/v1/bootcamps', bootcamps);
+
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
